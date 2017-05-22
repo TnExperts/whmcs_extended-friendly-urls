@@ -17,3 +17,20 @@ function extendedfriendlyurls_getVariables() {
         "SEO_URLS" => $CONFIG["SEOFriendlyUrls"] == "on" ? true : false;
     );
 }
+
+function extendedfriendlyurls_webRootRecursive($menuObject) {
+    $vars = extendedfriendlyurls_getVariables();
+    if ( $navbarObject->hasChildren ) {
+		foreach ( $navbarObject->getChildren as $childName => $childObject ) {
+			$childUri = $child_object->getUri();
+			if ( !is_null( $childUri ) && stripos( $childUri, $vars["WEB_ROOT"] ) !== 0 ) {
+				$childObject->setUri( $vars["WEB_ROOT"] . $childUri );
+			}
+			extendedfriendlyurls_webRootRecursive( $childObject );
+		}
+	} elseif ( !is_null( $itemUri = $navbarObject->getUri() ) ) {
+        if ( stripos( $itemUri, $vars["WEB_ROOT"] ) !== 0 ) {
+            $navbarObject->setUri( $vars["WEB_ROOT"] . $itemUri );
+        }
+    }
+}
