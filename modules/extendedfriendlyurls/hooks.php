@@ -20,10 +20,24 @@ function extendedfriendlyurls_getVariables() {
 	$SEO_URLS = $CONFIG["SEOFriendlyUrls"] == "on" ? true : false;
 	
 	# MEMBERS #
-	
+	try {
+        $MEMBERS = Capsule::table( 'tbladdonmodules' )
+            ->where('module','extendedfriendlyurls')
+            ->where('setting', 'members_url')
+            ->value('value');
+    } catch (\Exception $e) {
+        die("Get MEMBERS failed: " . $e->getMessage();
+    }
 	
 	# SUPPORT #
-	
+	try {
+        $SUPPORT = Capsule::table( 'tbladdonmodules' )
+            ->where('module','extendedfriendlyurls')
+            ->where('setting', 'members_url')
+            ->value('value');
+    } catch (\Exception $e) {
+        die("Get SUPPORT failed: " . $e->getMessage();
+    }
 	
     return array( "WEB_ROOT" => $WEB_ROOT, "SEO_URLS" => $SEO_URLS, "MEMBERS"  => $MEMBERS, "SUPPORT"  => $SUPPORT );
 }
