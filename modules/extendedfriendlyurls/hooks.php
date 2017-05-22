@@ -25,7 +25,7 @@ function extendedfriendlyurls_getVariables() {
 	# SUPPORT #
 	
 	
-    return array( "WEB_ROOT" => $WEB_ROOT, "SEO_URLS" => $SEO_URLS, "MEMBERS"  => $MEMBERS, "SUPPORT"  => $SUPPORT" );
+    return array( "WEB_ROOT" => $WEB_ROOT, "SEO_URLS" => $SEO_URLS, "MEMBERS"  => $MEMBERS, "SUPPORT"  => $SUPPORT );
 }
 
 function extendedfriendlyurls_webRootRecursive($menuObject) {
