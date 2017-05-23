@@ -34,30 +34,22 @@ function extendedfriendlyurls_config() {
 
 function extendedfriendlyurls_activate() {
     try {
-        Capsule::connection()->transaction(
-            function ($connectionManager) {
-                $connectionManager->table('tbladdonmodules')->insert([
-                    'module' => 'extendedfriendlyurls',
-                    'setting' => 'version',
-                    'value' => '1.0'
-                ]);
-            }
-        );
-        return array('status' => 'success', 'description' => 'Extended Friendly URLs sucessfully activated!');
+        Capsule::table( 'tbladdonmodules' )->insert([
+            'module' => 'extendedfriendlyurls',
+            'setting' => 'version',
+            'value' => '1.0'
+        ]);
+        return array( 'status' => 'success', 'description' => 'Extended Friendly URLs sucessfully activated!' );
     } catch (\Exception $e) {
-        return array('status' => 'error', 'description' => 'Unable to successfully activate Extended Friendly URLs! ' . $e->getMessage());
+        return array( 'status' => 'error', 'description' => 'Unable to successfully activate Extended Friendly URLs! ' . $e->getMessage() );
     }
 }
 
 function extendedfriendlyurls_deactivate() {
     try {
-        Capsule::connection()->transaction(
-            function ($connectionManager) {
-                $connectionManager->table('tbladdonmodules')->where('module','=','extendedfriendlyurls')->delete();
-            }
-        );
-        return array('status' => 'success', 'description' => 'Extended Friendly URLs successfully deactivated!');
+        Capsule::table( 'tbladdonmodules' )->where( 'module', '=', 'extendedfriendlyurls' )->delete(); );
+        return array( 'status' => 'success', 'description' => 'Extended Friendly URLs successfully deactivated!' );
     } catch (\Exception $e) {
-        return array('status' => 'error', 'description' => 'Unable to deactivate Extended Friendly URLs! '. $e->getMessaget());
+        return array( 'status' => 'error', 'description' => 'Unable to deactivate Extended Friendly URLs! ' . $e->getMessaget() );
     }
 }
