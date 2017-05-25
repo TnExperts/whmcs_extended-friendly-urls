@@ -6,10 +6,12 @@
  * Licensed under the GNU General Public License v3.0+
  */
 
+use WHMCS\Database\Capsule;
+
 function extendedfriendlyurls_config() {
     $configarray = array(
         "name"          => "Extended Friendly URLs for WHMCS",
-        "desscription"  => "Adds an extended array of friendly urls to WHMCS and converts all navigation links to support them.",
+        "description"  => "Adds an extended array of friendly urls to WHMCS and converts all navigation links to support them.",
         "version"       => "1.0",
         "author"        => "John Stray",
         "fields" => array(
@@ -26,7 +28,14 @@ function extendedfriendlyurls_config() {
                 "Default"       => "support",
                 "Type"          => "text",
                 "Size"          => "32"
-            )
+            ),
+            "products_url" => array(
+                "FriendlyName"  => "\"Products\" URL",
+                "Description"   => "A subfolder URL that Products/Groups fall under, eg.: \"/products/1/my-product.html\" (Leave blank for none)",
+                "Default"       => "support",
+                "Type"          => "text",
+                "Size"          => "32"
+            ),
         )
     );
     return $configarray;
@@ -34,11 +43,12 @@ function extendedfriendlyurls_config() {
 
 function extendedfriendlyurls_activate() {
     try {
-        Capsule::table( 'tbladdonmodules' )->insert([
-            'module' => 'extendedfriendlyurls',
-            'setting' => 'version',
-            'value' => '1.0'
-        ]);
+        Capsule::table( 'tbladdonmodules' )->insert(
+            ['module' => 'extendedfriendlyurls', 'setting' => 'version', 'value' => '1.0']
+            ['module' => 'extendedfriendlyurls', 'setting' => 'members_url', 'value' => 'members']
+            ['module' => 'extendedfriendlyurls', 'setting' => 'support_url', 'value' => '']
+            ['module' => 'extendedfriendlyurls', 'setting' => 'products_url', 'value' => 'products']
+        );
         return array( 'status' => 'success', 'description' => 'Extended Friendly URLs sucessfully activated!' );
     } catch (\Exception $e) {
         return array( 'status' => 'error', 'description' => 'Unable to successfully activate Extended Friendly URLs! ' . $e->getMessage() );
