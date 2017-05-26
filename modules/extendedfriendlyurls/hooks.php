@@ -79,7 +79,9 @@ function extendedfriendlyurls_modifyNavLinks( MenuItem $navigationObject ) {
             $childObjectUri = $childObject->getUri();
             if ( substr( $childObjectUri, 0, 1 ) == "/" ) { $childObjectUri = substr( $childObjectUri, 1 ); }
             if ( !is_null( $childObjectUri ) ) {
-                if ( $childObjectUri == "clientarea.php" ) {
+                if ( $childObjectUri == "index.php" ) {
+                    $childObject->setUri( $vars["WEB_ROOT"] );
+                } elseif ( $childObjectUri == "clientarea.php" ) {
                     $childObject->setUri( $vars["MEMBERS"] );
                 } elseif ( ( $pos = stripos( $childObjectUri, "clientarea.php?action=" ) ) !== FALSE ) {
                     $childObject->setUri( $vars["MEMBERS"] . substr( $childObjectUri, $pos+22) . "/" );
@@ -91,12 +93,16 @@ function extendedfriendlyurls_modifyNavLinks( MenuItem $navigationObject ) {
                 foreach ( $childObject->getChildren() as $subChildObject ) {
                     $subChildObjectUri = $subChildObject->getUri();
                     if ( substr( $subChildObjectUri, 0, 1 ) == "/" ) { $subChildObjectUri = substr( $subChildObjectUri, 1 ); }
-                    if ( $subChildObjectUri == "clientarea.php" ) {
-                        $subChildObject->setUri( $vars["MEMBERS"] );
-                    } elseif ( ( $pos = stripos( $subChildObjectUri, "clientarea.php?action=" ) ) !== FALSE ) {
-                        $subChildObject->setUri( $vars["MEMBERS"] . substr( $subChildObjectUri, $pos+22) . "/" );
-                    } elseif ( array_key_exists( $subChildObjectUri, $supportUrls ) ) {
-                        $subChildObject->setUri( $vars["SUPPORT"] . $supportUrls[$subChildObjectUri] . "/" );
+                    if ( !is_null( $subChildObjectUri ) ) {
+                        if ( $subChildObjectUri == "index.php" ) {
+                            $subChildObject->setUri( $vars["WEBROOT"] );
+                        } elseif ( $subChildObjectUri == "clientarea.php" ) {
+                            $subChildObject->setUri( $vars["MEMBERS"] );
+                        } elseif ( ( $pos = stripos( $subChildObjectUri, "clientarea.php?action=" ) ) !== FALSE ) {
+                            $subChildObject->setUri( $vars["MEMBERS"] . substr( $subChildObjectUri, $pos+22) . "/" );
+                        } elseif ( array_key_exists( $subChildObjectUri, $supportUrls ) ) {
+                            $subChildObject->setUri( $vars["SUPPORT"] . $supportUrls[$subChildObjectUri] . "/" );
+                        }
                     }
                 }
             }
@@ -105,7 +111,39 @@ function extendedfriendlyurls_modifyNavLinks( MenuItem $navigationObject ) {
     }
 }
 
+function extendedfriendlyurls_modifyBreadcrumbs( $templateVars ) {
+    $vars = extendedfriendlyurls_getVariables();
+    $breadcrumbs = $templateVars["breadcrumb"];
+    var_dump($breadcrumbs);
+    $supportUrls = array(
+		'knowledgebase.php' => 'knowledgebase',
+		'announcements.php' => 'announcements',
+        'downloads.php' => 'downloads',
+		'serverstatus.php' => 'network-status',
+		'supporttickets.php' => 'support-tickets',
+		'submitticket.php' => 'submit-ticket',
+        'contact.php' => 'contact-us'
+	);
+    foreach ( $breadcrumbs as $index => $crumb ) {
+        
+        if ( substr( $crumb['link'], 0, 1 ) == "/") { $crumb['link'] == substr( $crumb['link'], 1 ); }
+            if ( $crumb['link'] == "index.php" ) {
+                $breadcrumbs[$index]['link'] = $vars["WEB_ROOT"];
+            } elseif ( $crumb['link'] == "clientarea.php" ) {
+                $breadcrumbs[$index]['link'] = $vars["WEB_ROOT"] . $vars["MEMBERS"];
+            } elseif ( ( $pos = stripos( $crumb['link'], "clientarea.php?action=" ) ) !== FALSE ) {
+                $breadcrumbs[$index]['link'] = $vars["WEB_ROOT"] . $vars["MEMBERS"] . substr( $crumb['link'], $pos+22 ) . "/";
+            } elseif ( array_key_exists( $crumb['link'], $supportUrls ) ) {
+                $breadcrumbs[$index]['link'] = $vars["WEB_ROOT"] . $vars["SUPPORT"] . $supportUrls[$crumb['link']] . "/";
+            }
+        
+    }
+    var_dump($breadcrumbs);
+    return array ( "breadcrumb" => $breadcrumbs );
+}
+
 add_hook( 'ClientAreaPrimaryNavbar', 1, 'extendedfriendlyurls_modifyNavLinks' );
 add_hook( 'ClientAreaSecondaryNavbar', 1, 'extendedfriendlyurls_modifyNavLinks' );
 add_hook( 'ClientAreaPrimarySidebar', 1, 'extendedfriendlyurls_modifyNavLinks' );
 add_hook( 'ClientAreaSecondarySidebar', 1, 'extendedfriendlyurls_modifyNavLinks' );
+add_hook( 'ClientAreaPage', 1, 'extendedfriendlyurls_modifyBreadcrumbs' );
