@@ -114,7 +114,6 @@ function extendedfriendlyurls_modifyNavLinks( MenuItem $navigationObject ) {
 function extendedfriendlyurls_modifyBreadcrumbs( $templateVars ) {
     $vars = extendedfriendlyurls_getVariables();
     $breadcrumbs = $templateVars["breadcrumb"];
-    var_dump($breadcrumbs);
     $supportUrls = array(
 		'knowledgebase.php' => 'knowledgebase',
 		'announcements.php' => 'announcements',
@@ -138,7 +137,6 @@ function extendedfriendlyurls_modifyBreadcrumbs( $templateVars ) {
             }
         
     }
-    var_dump($breadcrumbs);
     return array ( "breadcrumb" => $breadcrumbs );
 }
 
